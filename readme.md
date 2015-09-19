@@ -69,7 +69,7 @@ Shorthand method for [requesting access token](https://vk.com/dev/authentication
 
 ## Errors
 
-`vk-got` extends [got errros](https://github.com/sindresorhus/got#errors) with one VK-specific error type.
+`vk-got` extends [got errors](https://github.com/sindresorhus/got#errors) with one VK-specific error type.
 
 ### vkGot.VKError
 
