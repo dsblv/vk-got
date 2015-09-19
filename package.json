@@ -1,6 +1,6 @@
 {
   "name": "vk-got",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Convenience wrapper for `got` to interact with the VK API",
   "license": "MIT",
   "repository": "dsblv/vk-got",
