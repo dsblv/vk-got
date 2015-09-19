@@ -2,11 +2,13 @@
 var got = require('got');
 var decamelize = require('decamelize');
 var deepAssign = require('deep-assign');
-var PinkiePromise = require('pinkie-promise');
+var Promise = require('pinkie-promise');
+var createErrorClass = require('create-error-class');
+var urlLib = require('url');
 
-module.exports = function (method, opts) {
+var vkGot = module.exports = function (method, opts) {
 	if (typeof method !== 'string') {
-		return PinkiePromise.reject(new TypeError('Method should be a string'));
+		return Promise.reject(new TypeError('Method should be a string'));
 	}
 
 	opts = deepAssign({
@@ -14,6 +16,7 @@ module.exports = function (method, opts) {
 		headers: {
 			'user-agent': 'htts://github.com/dsblv/vk-got'
 		},
+		endpoint: 'https://api.vk.com/method/',
 		body: {}
 	}, opts);
 
@@ -34,11 +37,31 @@ module.exports = function (method, opts) {
 		}
 	});
 
-	return got.post('https://api.vk.com/method/' + method, opts).then(function (data) {
-		if (data.body && typeof data.body.error !== 'undefined') {
-			return PinkiePromise.reject(data.body.error);
+	return got.post(opts.endpoint + method, opts).then(function (res) {
+		if (res.body && typeof res.body.error !== 'undefined') {
+			return Promise.reject(new vkGot.VKError(res.body.error, opts));
 		}
 
-		return data;
+		return res;
 	});
 };
+
+vkGot.token = function (opts) {
+	return vkGot('access_token', deepAssign({
+		endpoint: 'https://oauth.vk.com/'
+	}, opts));
+};
+
+vkGot.VKError = createErrorClass('VKError', function (err, opts) {
+	var url = urlLib.parse(opts.endpoint);
+
+	deepAssign(this, {
+		message: err.error_msg,
+		code: err.error_code,
+		requestBody: opts.body,
+		host: url.host,
+		hostname: url.hostname,
+		method: 'POST',
+		path: url.path
+	});
+});

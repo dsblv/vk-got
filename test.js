@@ -14,11 +14,22 @@ test('making requests', function (a) {
 });
 
 test('accepting token', function (a) {
-	a.plan(1);
-
 	return vkGot('users.get', {
-		token: 'koten'
+		token: 'no token :('
 	}).catch(function (err) {
 		a.ok(err);
+	});
+});
+
+test('requesting token', function (a) {
+	return vkGot.token({
+		body: {
+			code: 'no code :(',
+			clientId: 'nope',
+			clientSecret: 'nope',
+			redirectUri: 'http://localhost/code'
+		}
+	}).catch(function (err) {
+		a.is(err.statusCode, 401);
 	});
 });

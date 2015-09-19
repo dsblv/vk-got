@@ -28,6 +28,7 @@
     "promise"
   ],
   "dependencies": {
+    "create-error-class": "^2.0.1",
     "decamelize": "^1.0.0",
     "deep-assign": "^1.0.0",
     "got": "^4.2.0",
