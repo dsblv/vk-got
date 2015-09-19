@@ -5,8 +5,8 @@ var vkGot = require('./');
 test('making requests', function (a) {
 	return vkGot('users.get', {
 		body: {
-			'userIds': 'sobo13v',
-			'v': '5.37'
+			userIds: 'sobo13v',
+			v: '5.37'
 		}
 	}).then(function (res) {
 		a.is(res.body.response[0].id, 15658953);
