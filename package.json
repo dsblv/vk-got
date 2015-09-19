@@ -1,0 +1,40 @@
+{
+  "name": "vk-got",
+  "version": "1.0.0",
+  "description": "Convenience wrapper for `got` to interact with the VK API",
+  "license": "MIT",
+  "repository": "dsblv/vk-got",
+  "author": {
+    "name": "Dimzel Sobolev",
+    "email": "disobolev@icloud.com",
+    "url": "vk.com/sobo13v"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "vk",
+    "api",
+    "calls",
+    "got",
+    "request",
+    "https",
+    "promise"
+  ],
+  "dependencies": {
+    "decamelize": "^1.0.0",
+    "deep-assign": "^1.0.0",
+    "got": "^4.2.0",
+    "pinkie-promise": "^1.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.2.0",
+    "xo": "*"
+  }
+}
