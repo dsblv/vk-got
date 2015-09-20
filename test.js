@@ -1,33 +1,32 @@
-'use strict';
-var test = require('ava');
-var vkGot = require('./');
+import test from'ava';
+import vkGot from'./';
 
-test('cheking for method', function (a) {
-	return vkGot().catch(function (err) {
+test('cheking for method', a => {
+	return vkGot().catch(err => {
 		a.ok(err);
 	});
 });
 
-test.serial('making requests', function (a) {
+test.serial('making requests', a => {
 	return vkGot('users.get', {
 		body: {
 			userIds: 'sobo13v',
 			v: '5.37'
 		}
-	}).then(function (res) {
+	}).then(res => {
 		a.is(res.body.response[0].id, 15658953);
 	});
 });
 
-test.serial('accepting token', function (a) {
+test.serial('accepting token', a => {
 	return vkGot('users.get', {
 		token: 'no token :('
-	}).catch(function (err) {
+	}).catch(err => {
 		a.ok(err);
 	});
 });
 
-test.serial('requesting token', function (a) {
+test.serial('requesting token', a => {
 	return vkGot.token({
 		body: {
 			code: 'no code :(',
@@ -35,7 +34,7 @@ test.serial('requesting token', function (a) {
 			clientSecret: 'nope',
 			redirectUri: 'http://localhost/code'
 		}
-	}).catch(function (err) {
+	}).catch(err => {
 		a.is(err.statusCode, 401);
 	});
 });

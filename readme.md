@@ -14,7 +14,7 @@ $ npm install --save vk-got
 ## Usage
 
 ```js
-const vkGot = require('vk-got');
+import vkGot from 'vk-got';
 
 vkGot('users.get', {
 	body: {
