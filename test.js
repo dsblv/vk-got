@@ -2,7 +2,13 @@
 var test = require('ava');
 var vkGot = require('./');
 
-test('making requests', function (a) {
+test('cheking for method', function (a) {
+	return vkGot().catch(function (err) {
+		a.ok(err);
+	});
+});
+
+test.serial('making requests', function (a) {
 	return vkGot('users.get', {
 		body: {
 			userIds: 'sobo13v',
@@ -13,7 +19,7 @@ test('making requests', function (a) {
 	});
 });
 
-test('accepting token', function (a) {
+test.serial('accepting token', function (a) {
 	return vkGot('users.get', {
 		token: 'no token :('
 	}).catch(function (err) {
@@ -21,7 +27,7 @@ test('accepting token', function (a) {
 	});
 });
 
-test('requesting token', function (a) {
+test.serial('requesting token', function (a) {
 	return vkGot.token({
 		body: {
 			code: 'no code :(',
