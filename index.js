@@ -1,67 +1,71 @@
 'use strict';
-var got = require('got');
-var decamelize = require('decamelize');
-var deepAssign = require('deep-assign');
-var Promise = require('pinkie-promise');
-var createErrorClass = require('create-error-class');
-var urlLib = require('url');
+const got = require('got');
+const decamelizeKeys = require('decamelize-keys');
+const urlParse = require('url').parse;
 
-var vkGot = module.exports = function (method, opts) {
+class VKError extends Error {
+	constructor(err, opts) {
+		super(err.error_msg);
+
+		const url = urlParse(opts.endpoint);
+
+		Object.assign(this, {
+			name: this.constructor.name,
+			message: err.error_msg,
+			code: err.error_code,
+			requestBody: opts.body,
+			host: url.host,
+			hostname: url.hostname,
+			path: url.path,
+			method: 'POST'
+		});
+	}
+}
+
+function VKReq(method, opts) {
 	if (typeof method !== 'string') {
-		return Promise.reject(new TypeError('Method should be a string'));
+		throw new TypeError('Method should be a string');
 	}
 
-	opts = deepAssign({
-		json: true,
+	opts = Object.assign({
 		headers: {
 			'user-agent': 'htts://github.com/dsblv/vk-got'
 		},
-		endpoint: 'https://api.vk.com/method/',
-		body: {}
-	}, opts);
+		endpoint: 'https://api.vk.com/method/'
+	}, opts, {
+		json: true
+	});
 
-	var token = process.env.VK_API_TOKEN || opts.token;
-	var body = opts.body;
+	const token = process.env.VK_API_TOKEN || opts.token;
+	const body = opts.body || {};
 
 	if (token) {
 		body.accessToken = token;
 	}
 
-	Object.keys(body).forEach(function (key) {
-		var dcKey = decamelize(key, '_');
+	opts.body = decamelizeKeys(body);
 
-		body[dcKey] = body[key];
-
-		if (dcKey !== key) {
-			delete body[key];
-		}
-	});
-
-	return got.post(opts.endpoint + method, opts).then(function (res) {
-		if (res.body && typeof res.body.error !== 'undefined') {
-			return Promise.reject(new vkGot.VKError(res.body.error, opts));
+	return got.post(`${opts.endpoint}${method}`, opts).then(res => {
+		if (res.body && res.body.error) {
+			throw new VKError(res.body.error, opts);
 		}
 
 		return res;
 	});
-};
+}
+
+function vkGot() {
+	try {
+		return VKReq.apply(null, arguments);
+	} catch (err) {
+		return Promise.reject(err);
+	}
+}
 
 vkGot.token = function (opts) {
-	return vkGot('access_token', deepAssign({
+	return vkGot('access_token', Object.assign({
 		endpoint: 'https://oauth.vk.com/'
 	}, opts));
 };
 
-vkGot.VKError = createErrorClass('VKError', function (err, opts) {
-	var url = urlLib.parse(opts.endpoint);
-
-	deepAssign(this, {
-		message: err.error_msg,
-		code: err.error_code,
-		requestBody: opts.body,
-		host: url.host,
-		hostname: url.hostname,
-		method: 'POST',
-		path: url.path
-	});
-});
+module.exports = vkGot;

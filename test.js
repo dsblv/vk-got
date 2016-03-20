@@ -1,40 +1,46 @@
-import test from'ava';
-import vkGot from'./';
+import test from 'ava';
+import fn from './';
 
-test('cheking for method', a => {
-	return vkGot().catch(err => {
-		a.ok(err);
-	});
+test('cheking for method', async t => {
+	try {
+		await fn();
+	} catch (err) {
+		t.pass();
+	}
 });
 
-test.serial('making requests', a => {
-	return vkGot('users.get', {
+test.serial('making requests', async t => {
+	const res = await fn('users.get', {
 		body: {
-			userIds: 'sobo13v',
-			v: '5.37'
+			userIds: 'hypercrab',
+			v: '5.50'
 		}
-	}).then(res => {
-		a.is(res.body.response[0].id, 15658953);
 	});
+
+	t.is(res.body.response[0].id, 15658953);
 });
 
-test.serial('accepting token', a => {
-	return vkGot('users.get', {
-		token: 'no token :('
-	}).catch(err => {
-		a.ok(err);
-	});
+test.serial('accepting token', async t => {
+	try {
+		await fn('users.get', {
+			token: 'no token :('
+		});
+	} catch (err) {
+		t.pass();
+	}
 });
 
-test.serial('requesting token', a => {
-	return vkGot.token({
-		body: {
-			code: 'no code :(',
-			clientId: 'nope',
-			clientSecret: 'nope',
-			redirectUri: 'http://localhost/code'
-		}
-	}).catch(err => {
-		a.is(err.statusCode, 401);
-	});
+test.serial('requesting token', async t => {
+	try {
+		await fn.token({
+			body: {
+				code: 'nope',
+				clientId: 'nope',
+				clientSecret: 'nope',
+				redirectUri: 'nope'
+			}
+		});
+	} catch (err) {
+		t.is(err.statusCode, 401);
+	}
 });

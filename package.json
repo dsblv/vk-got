@@ -7,10 +7,10 @@
   "author": {
     "name": "Dimzel Sobolev",
     "email": "disobolev@icloud.com",
-    "url": "vk.com/sobo13v"
+    "url": "github.com/dsblv"
   },
   "engines": {
-    "node": ">=0.10.0"
+    "node": ">=4"
   },
   "scripts": {
     "test": "xo && ava"
@@ -28,14 +28,12 @@
     "promise"
   ],
   "dependencies": {
-    "create-error-class": "^2.0.1",
-    "decamelize": "^1.0.0",
-    "deep-assign": "^1.0.0",
-    "got": "^4.2.0",
-    "pinkie-promise": "^1.0.0"
+    "create-error-class": "^3.0.0",
+    "decamelize-keys": "^1.1.0",
+    "got": "^6.2.0"
   },
   "devDependencies": {
-    "ava": "^0.2.0",
+    "ava": "^0.13.0",
     "xo": "*"
   }
 }
